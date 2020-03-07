@@ -7,7 +7,11 @@ public class Health {
         this.hp = hp;
     }
 
-    public void reduce(int hp){
+    public void reduce(int damage){
+        this.hp -= damage;
+    }
 
+    public void heal(int hp){
+        this.hp += hp;
     }
 }

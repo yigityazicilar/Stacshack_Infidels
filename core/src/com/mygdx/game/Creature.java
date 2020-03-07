@@ -1,5 +1,5 @@
 package com.mygdx.game;
 
-public class Creature {
+public class Creature extends Enemy{
 
 }

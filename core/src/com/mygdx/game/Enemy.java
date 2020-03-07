@@ -1,6 +1,9 @@
 package com.mygdx.game;
 
-public abstract class Enemy {
-    protected String name;
-    protected Health health;
+import java.util.HashMap;
+
+public abstract class Enemy extends Entity{
+
+
+
 }
