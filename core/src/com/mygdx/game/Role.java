@@ -1,8 +1,9 @@
 package com.mygdx.game;
 
 public enum Role {
-    FIGHTER("fighter.txt"),
-    ENEMY("enemy.txt");
+    FIGHTER("core/assets/fighter.txt"),
+    CREATURE("core/assets/creature.txt"),
+    BOSS("core/assets/boss.txt");
 
     private String filepath;
 

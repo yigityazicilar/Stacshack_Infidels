@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMenu;
 import com.mygdx.game.MyGame;
+import com.mygdx.game.Logic;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -15,5 +16,6 @@ public class DesktopLauncher {
 		config.height = 450;
 		config.fullscreen = true;
 		new LwjglApplication(new MyGame(), config);
+		Logic.run();
 	}
 }
