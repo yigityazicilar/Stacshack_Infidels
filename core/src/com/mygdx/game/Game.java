@@ -19,8 +19,8 @@ public class Game {
 
         System.out.println(player.getHealth());
 
-        player.hurt(creature.attack("grr"));
-        System.out.println(creature.attack("grr"));
+        player.hurt(creature.sendAttack("grr"));
+        System.out.println(creature.sendAttack("grr"));
 
         System.out.println(player.getHealth());
     }
