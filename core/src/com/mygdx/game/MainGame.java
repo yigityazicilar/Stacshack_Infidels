@@ -1,8 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MainGame implements Screen {
-//	private Stage stage;
 	private Game game;
 
     // Scenes
@@ -35,9 +36,8 @@ public class MainGame implements Screen {
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
-	final int gap = 50;
-	final int buttonWidth = 200;
-	final int buttonHeight = 100;
+	private int wordCounter = 0;
+	private String[] wordlist;
 
 	public MainGame(com.badlogic.gdx.Game game){
 		this.game = game;
@@ -53,17 +53,29 @@ public class MainGame implements Screen {
 		word = new BitmapFont();
 		word.setColor(Color.WHITE);
 		word.getData().setScale(5);
+		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		FileHandle file = Gdx.files.internal("wordlist.txt");
+		String text = file.readString();
+		wordlist = text.split("\\s+");
 	}
 
 
 	@Override
 	public void render(float delta) {
-		CharSequence charSequence = "Words pop up here";
+
+		if (wordCounter < wordlist.length) {
+			wordCounter++;
+		} else {
+		    wordCounter = 0;
+		}
+		mainGame.begin();
+		CharSequence charSequence = wordlist[wordCounter/20];
 	    GlyphLayout layout = new GlyphLayout();
 	    layout.setText(word, charSequence);
-		mainGame.begin();
+
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
-		word.draw(mainGame, "Words pop up here", screenWidth/2 - layout.width/2, screenHeight/2);
+		word.draw(mainGame, wordlist[wordCounter/20], screenWidth/2 - layout.width/2, screenHeight/2);
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 		elapsed += Gdx.graphics.getDeltaTime();
 		for (int i = 0; i < 5; i++) {
