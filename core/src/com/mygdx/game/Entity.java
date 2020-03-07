@@ -11,13 +11,15 @@ import java.util.List;
 public abstract class Entity {
     protected String name;
     protected int health = 100;
-    protected HashMap<String, Attack> attacks;
-    protected double multiplier;
+
+    protected ArrayList<String> attacks;
+
+    protected double multiplier = 1;
 
     public Entity(String name, Role role){
         this.name = name;
-        this.attacks = new HashMap<>();
-        importRole();
+        this.attacks = new ArrayList<>();
+        this.importRole(role);
         importAttacks(role.getFilePath());
 
     }
@@ -31,9 +33,9 @@ public abstract class Entity {
     }
 
 
-    public int sendAttack(String word){
-        if(this.attacks.containsKey(word)){
-            System.out.println("word is contained");
+    public int attack(String word){
+
+        if(this.attacks.contains(word)){
             return (int)Math.floor(word.length() * multiplier);
         }else{
             return 0;
@@ -53,22 +55,13 @@ public abstract class Entity {
         this.health = health;
     }
 
-    public void importRole(){
+    public void importRole(Role role){
     }
 
     public void importAttacks(String filepath){
         try{
             List<String> moves = Files.readAllLines(Paths.get(filepath));
-
-            String[] components;
-
-            for(int i = 0; i < moves.size(); i++){
-                components = moves.get(i).split(" ");
-                this.attacks.put(components[0], new Attack(components[0].length(),
-                                                Integer.parseInt(components[1]),
-                                                Integer.parseInt(components[2])));
-            }
-
+            this.attacks.addAll(moves);
         }catch(IOException e){
             System.out.println("Cannot get " + e.getMessage());
         }
