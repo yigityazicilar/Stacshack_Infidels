@@ -1,8 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -13,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.uwsoft.editor.renderer.utils.MySkin;
 
-public class MainMenu implements Screen {
+public class MainMenu extends ApplicationAdapter implements Screen {
 
     private Game game;
     private Stage stage;
@@ -26,29 +28,35 @@ public class MainMenu implements Screen {
 
         ImageButton start = new ImageButton(new ImageButton.ImageButtonStyle());
         start.setSize(buttonWidth, buttonHeight);
-        start.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("startbutton.png")));
-        start.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("startbutton.png")));
-        start.setPosition(960, 500);
+        start.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("start_button.png")));
+        start.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("start_button.png")));
+        start.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2, Gdx.graphics.getHeight() / 2 - start.getHeight() / 2);
         start.addListener(new InputListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(new MainGame(game));
             }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
         });
-
-
-
+        stage.addActor(start);
     }
 
 
     @Override
     public void show() {
-
+       Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
-
+        Gdx.gl.glClearColor(1,1,1,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+       stage.act();
+       stage.draw();
     }
 
     @Override
@@ -73,6 +81,6 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
