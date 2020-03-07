@@ -48,13 +48,11 @@ public class MainGame implements Screen {
 		enemyTexture = new Texture("sans.gif");
 		character = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());
 		enemy = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("sans.gif").read());
-		backgroundTexture = new Texture("background2.png");
+		backgroundTexture = new Texture("background.png");
 		backgroundSprite = new Sprite(backgroundTexture);
 		word = new BitmapFont();
 		word.setColor(Color.WHITE);
 		word.getData().setScale(5);
-		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 
