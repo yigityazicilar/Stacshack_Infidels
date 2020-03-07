@@ -7,16 +7,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class Game extends ApplicationAdapter {
-	SpriteBatch batch;
+	SpriteBatch mainGame;
 	Texture img;
 	float elapsed;
 	Animation<TextureRegion> animation;
+	TextButton startButton;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
+		mainGame = new SpriteBatch();
 		img = new Texture("wizard.gif");
 		animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());
 	}
@@ -26,14 +28,14 @@ public class Game extends ApplicationAdapter {
 		elapsed += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(animation.getKeyFrame(elapsed), Gdx.graphics.getWidth()/2 - img.getWidth()/2, 20.0f);
-		batch.end();
+		mainGame.begin();
+		mainGame.draw(animation.getKeyFrame(elapsed), Gdx.graphics.getWidth()/2 - img.getWidth()/2, 20.0f);
+		mainGame.end();
 	}
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
+		mainGame.dispose();
 		img.dispose();
 	}
 }
