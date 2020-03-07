@@ -25,7 +25,6 @@ public class Game extends ApplicationAdapter {
 	Texture enemyTexture;
 	float elapsed;
 	Animation<TextureRegion> animation;
-	ImageButton start;
 	Animation<TextureRegion> character;
 	Animation<TextureRegion> enemy;
 	public static Texture backgroundTexture;
@@ -36,7 +35,6 @@ public class Game extends ApplicationAdapter {
 		mainGame = new SpriteBatch();
 		img = new Texture("wizard.gif");
 		animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());
-		start = new ImageButton(new ImageButtonStyle());
 		wizardTexture = new Texture("wizard.gif");
 		enemyTexture = new Texture("sans.gif");
 		character = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());
@@ -51,16 +49,6 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		mainMenu.begin();
-		start.setSize(buttonWidth, buttonHeight);
-		start.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("startbutton.png")));
-		start.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("startbutton.png")));
-		start.setPosition(960, 500);
-		start.addListener(new InputListener(){
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				Game.setScreen()
-			}
-		});
 		mainMenu.end();
 		mainMenu.begin();
 		mainGame.draw(animation.getKeyFrame(elapsed), Gdx.graphics.getWidth()/2 - img.getWidth()/2, 20.0f);
