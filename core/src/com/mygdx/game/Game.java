@@ -46,14 +46,12 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		mainGame.begin();
 		mainGame.draw(animation.getKeyFrame(elapsed), Gdx.graphics.getWidth()/2 - img.getWidth()/2, 20.0f);
-		mainGame.end();
-		batch.begin();
-		batch.draw(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		batch.draw(character.getKeyFrame(elapsed), Gdx.graphics.getWidth()/2 - wizardTexture.getWidth()/2, 20.0f);
+		mainGame.draw(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		mainGame.draw(character.getKeyFrame(elapsed), Gdx.graphics.getWidth()/2 - wizardTexture.getWidth()/2, 20.0f);
 		for (int i = 0; i < 5; i++) {
-			batch.draw(enemy.getKeyFrame(elapsed), (Gdx.graphics.getWidth() - (5)*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), Gdx.graphics.getHeight() - enemyTexture.getHeight() - 100);
+			mainGame.draw(enemy.getKeyFrame(elapsed), (Gdx.graphics.getWidth() - (5)*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), Gdx.graphics.getHeight() - enemyTexture.getHeight() - 100);
 		}
-		batch.end();
+		mainGame.end();
 	}
 	
 	@Override
