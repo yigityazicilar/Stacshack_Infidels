@@ -20,7 +20,7 @@ public class Game extends ApplicationAdapter {
 	public void create () {
 		mainGame = new SpriteBatch();
 		img = new Texture("wizard.gif");
-		animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());\
+		animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());
 	}
 
 	@Override
