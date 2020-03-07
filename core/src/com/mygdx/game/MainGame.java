@@ -1,8 +1,7 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
@@ -41,6 +41,10 @@ public class MainGame implements Screen {
 	InputListener inputListener;
 	private int wordCounter = 0;
 	private String[] wordlist;
+	private String typedWord = "";
+	FileHandle fontFile;
+	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
+	FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
 	public MainGame(com.badlogic.gdx.Game game){
 		this.game = game;
@@ -53,21 +57,33 @@ public class MainGame implements Screen {
 		enemy = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("sans.gif").read());
 		backgroundTexture = new Texture("background.png");
 		backgroundSprite = new Sprite(backgroundTexture);
-		word = new BitmapFont();
+		parameter.size = 84;
+		word = generator.generateFont(parameter);
 		word.setColor(Color.WHITE);
-		word.getData().setScale(5);
-		inputListener = new InputListener(){
-			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-				System.out.println(character);
-				return super.keyTyped(event, character);
-			}
-		};
+		word.getData().setScale(1);
 		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		FileHandle file = Gdx.files.internal("wordlist.txt");
 		String text = file.readString();
 		wordlist = text.split("\\s+");
+		Gdx.input.setInputProcessor(new InputAdapter(){
+			@Override
+			public boolean keyTyped(char character) {
+				if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+					typedWord = "";
+					System.out.println(typedWord);
+				}else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
+					if (typedWord.length() >= 1) {
+						typedWord = typedWord.substring(0, typedWord.length() - 1);
+						System.out.println(typedWord);
+					}
+				} else {
+					typedWord = typedWord + character;
+					System.out.println(typedWord);
+				}
+				return super.keyTyped(character);
+			}
+		});
 	}
 
 
