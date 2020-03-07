@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
@@ -13,8 +12,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class MainGame implements Screen {
+//	private Stage stage;
 	private Game game;
 
     // Scenes
@@ -36,6 +38,7 @@ public class MainGame implements Screen {
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
+	InputListener inputListener;
 	private int wordCounter = 0;
 	private String[] wordlist;
 
@@ -53,6 +56,13 @@ public class MainGame implements Screen {
 		word = new BitmapFont();
 		word.setColor(Color.WHITE);
 		word.getData().setScale(5);
+		inputListener = new InputListener(){
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				System.out.println(character);
+				return super.keyTyped(event, character);
+			}
+		};
 		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		FileHandle file = Gdx.files.internal("wordlist.txt");
