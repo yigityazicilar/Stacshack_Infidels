@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -19,18 +20,27 @@ public class MainMenu extends ApplicationAdapter implements Screen {
 
     private Game game;
     private Stage stage;
-    final int buttonWidth = 200;
-    final int buttonHeight = 100;
+    final int buttonWidth = 300;
+    final int buttonHeight = 200;
 
     public MainMenu(Game aGame){
         game = aGame;
         stage = new Stage(new ScreenViewport());
 
+        Image background = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("background.png"))));
+        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        background.setPosition(0, 0);
+        Image logo = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("logoTypeWarriors.png"))));
+        logo.setSize(300, 300);
+        logo.setPosition(Gdx.graphics.getWidth() / 2 - logo.getWidth() / 2, (Gdx.graphics.getHeight() / 5) * 4 - logo.getHeight() / 2);
+        Image logoText = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("KeyboardWarriors.png"))));
+        logoText.setSize(702, 86);
+        logoText.setPosition(Gdx.graphics.getWidth() / 2 - logoText.getWidth() / 2,  (Gdx.graphics.getHeight() / 5) * 4 - logoText.getHeight() / 2 - logo.getHeight() / 2 - 50);
         ImageButton start = new ImageButton(new ImageButton.ImageButtonStyle());
         start.setSize(buttonWidth, buttonHeight);
         start.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("start_button.png")));
         start.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("start_button.png")));
-        start.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2, Gdx.graphics.getHeight() / 2 - start.getHeight() / 2);
+        start.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 , Gdx.graphics.getHeight() / 2 - start.getHeight() / 2 - 50);
         start.addListener(new InputListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -42,7 +52,27 @@ public class MainMenu extends ApplicationAdapter implements Screen {
                 return true;
             }
         });
+        ImageButton exit = new ImageButton(new ImageButton.ImageButtonStyle());
+        exit.setSize(buttonWidth, buttonHeight);
+        exit.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("exit_button.png")));
+        exit.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("exit_button.png")));
+        exit.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 , Gdx.graphics.getHeight() / 2 - start.getHeight() / 2 - 250);
+        exit.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                System.exit(0);
+            }
+        });
+        stage.addActor(background);
+        stage.addActor(logo);
+        stage.addActor(logoText);
         stage.addActor(start);
+        stage.addActor(exit);
     }
 
 
@@ -53,8 +83,6 @@ public class MainMenu extends ApplicationAdapter implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
     }
