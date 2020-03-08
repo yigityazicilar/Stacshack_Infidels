@@ -7,9 +7,7 @@ public abstract class Entity {
 
     public Entity(String name, Role role){
         this.name = name;
-        importRole();
-
-    }
+	}
 
     public String getName(){
         return this.name;
@@ -18,8 +16,6 @@ public abstract class Entity {
     public int getHealth(){
         return this.health;
     }
-
-
 
     public void hurt(int damage){
         this.health -= damage;
