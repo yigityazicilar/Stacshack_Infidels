@@ -31,7 +31,7 @@ public abstract class Entity {
     }
 
 
-    public int attack(String word){
+    public int sendAttack(String word){
         if(this.attacks.containsKey(word)){
             System.out.println("word is contained");
             return (int)Math.floor(word.length() * multiplier);
