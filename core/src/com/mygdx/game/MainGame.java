@@ -201,7 +201,7 @@ public class MainGame implements Screen {
 			for (int i = 0; i < numberOfEnemies; i++) {
 				mainGame.draw(enemyAnimation.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight());
 				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
-				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100),20));
+				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100)),20);
 				System.out.println(enemyHealth/enemyMaxHealth);
 			}
 		}else {
