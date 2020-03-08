@@ -45,7 +45,10 @@ public class MainGame implements Screen {
 	private String currentWord;
 	private String[] wordlist;
 	private Boolean wordTyped = false;
+	private Boolean generateWords = false;
 	private String typedWord = "";
+	private int numberOfEnemies = 5;
+	private String[] enemyWords;
 	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 	private int completedWordCounter = 0;
@@ -55,7 +58,11 @@ public class MainGame implements Screen {
 	public MainGame(com.badlogic.gdx.Game game){
 		this.game = game;
 		player = new Player("wizard", Role.FIGHTER);
-		// currentword
+		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
+		for (String enemyWord : enemyWords) {
+			System.out.println(enemyWord);
+		}
+		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		mainGame = new SpriteBatch();
@@ -78,6 +85,18 @@ public class MainGame implements Screen {
 			@Override
 			public boolean keyTyped(char character) {
 				if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+					if(typedWord.equals(currentWord)){
+						director.sendWordsComplete(true);
+					}else {
+						director.sendWordsComplete(false);
+					}
+					if(completedWordCounter == numberOfEnemies){
+						completedWordCounter = 0;
+						generateWords = true;
+					}else {
+						completedWordCounter++;
+					}
+					wordTyped = true;
 					typedWord = "";
 					System.out.println(typedWord);
 				}else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
@@ -100,22 +119,24 @@ public class MainGame implements Screen {
 		mainGame.begin();
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
+		if(generateWords) {
+			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 2, player);
+			generateWords = false;
+		}
+
 		if (wordTyped) {
 			String[] enemyWords = director.requestEnemyWord(1, 5, 2, player);
 			currentWord = enemyWords[completedWordCounter];
 			wordTyped = false;
 		}
 
-		List<String> enemyWords = new ArrayList<>();
-		for (int i = 0; i < 3; i++) {
-//			enemyWords.add(getRandomWord());
-		}
-
+		System.out.println(currentWord);
 		displayText(currentWord, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
 
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 		elapsed += Gdx.graphics.getDeltaTime();
-		for (int i = 0; i < 5; i++) {
+		//Fix it so it gets centered with lower amount of enemies.
+		for (int i = 0; i < numberOfEnemies; i++) {
 			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - (5)*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
 		}
 		mainGame.end();
