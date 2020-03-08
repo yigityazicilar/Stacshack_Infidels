@@ -79,6 +79,7 @@ public class MainGame implements Screen {
 		characterHealth = player.getHealth();
 		characterMaxHeath = player.getMaxHealth();
 		enemyHealth = enemy.getHealth();
+		System.out.println(enemyHealth);
 		enemyMaxHealth = enemy.getMaxHealth();
 
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 10, player);
@@ -146,6 +147,7 @@ public class MainGame implements Screen {
 						for (String word: playerWords) {
 							if(word.equals(typedWord)){
 								enemyHealth -= typedWord.length();
+								System.out.println(enemyHealth);
 								typedWord = "";
 								generateWords = true;
 								playerTurn = false;
@@ -194,14 +196,13 @@ public class MainGame implements Screen {
 
 			mainGame.draw(characterAnimation.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 			mainGame.draw(healthBar, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),200,40);
-//			System.out.println(characterHealth);
-//			System.out.println(characterMaxHeath);
-			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(characterHealth/characterMaxHeath)*200,40);
+			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(int) Math.floor((double) characterHealth/characterMaxHeath*200),40);
 			elapsed += Gdx.graphics.getDeltaTime();
 			for (int i = 0; i < numberOfEnemies; i++) {
 				mainGame.draw(enemyAnimation.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight());
 				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
-				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, (enemyHealth/enemyMaxHealth)*100,20);
+				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100),20));
+				System.out.println(enemyHealth/enemyMaxHealth);
 			}
 		}else {
 			mainGame.flush();
@@ -224,12 +225,12 @@ public class MainGame implements Screen {
 
 			mainGame.draw(characterAnimation.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 			mainGame.draw(healthBar, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),200,40);
-			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(characterHealth/characterMaxHeath)*200,40);
+			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(int) Math.floor((double) characterHealth/characterMaxHeath*200),40);
 			elapsed += Gdx.graphics.getDeltaTime();
 			for (int i = 0; i < numberOfEnemies; i++) {
 				mainGame.draw(enemyAnimation.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight());
 				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
-				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, (enemyHealth/enemyMaxHealth)*100,20);
+				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, (int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100),20);
 			}
 		}
 		mainGame.end();
