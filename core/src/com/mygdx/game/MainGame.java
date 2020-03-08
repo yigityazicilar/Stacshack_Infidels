@@ -15,8 +15,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class MainGame implements Screen {
-//	private Stage stage;
 	private Game game;
 
     // Scenes
@@ -38,16 +41,21 @@ public class MainGame implements Screen {
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
-	InputListener inputListener;
 	private int wordCounter = 0;
+	private String currentWord;
 	private String[] wordlist;
+	private Boolean wordTyped = false;
 	private String typedWord = "";
-	FileHandle fontFile;
-	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
-	FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
+	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+	private int completedWordCounter = 0;
+	public Player player;
+	public GameDirector director = new GameDirector();
 
 	public MainGame(com.badlogic.gdx.Game game){
 		this.game = game;
+		player = new Player("wizard", Role.FIGHTER);
+		// currentword
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		mainGame = new SpriteBatch();
@@ -89,25 +97,35 @@ public class MainGame implements Screen {
 
 	@Override
 	public void render(float delta) {
-
-		if (wordCounter < wordlist.length) {
-			wordCounter++;
-		} else {
-		    wordCounter = 0;
-		}
 		mainGame.begin();
-		CharSequence charSequence = wordlist[wordCounter/20];
-	    GlyphLayout layout = new GlyphLayout();
-	    layout.setText(word, charSequence);
-
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
-		word.draw(mainGame, wordlist[wordCounter/20], screenWidth/2 - layout.width/2, screenHeight/2);
+
+		if (wordTyped) {
+			String[] enemyWords = director.requestEnemyWord(1, 5, 2, player);
+			currentWord = enemyWords[completedWordCounter];
+			wordTyped = false;
+		}
+
+		List<String> enemyWords = new ArrayList<>();
+		for (int i = 0; i < 3; i++) {
+//			enemyWords.add(getRandomWord());
+		}
+
+		displayText(currentWord, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
+
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 		elapsed += Gdx.graphics.getDeltaTime();
 		for (int i = 0; i < 5; i++) {
 			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - (5)*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
 		}
 		mainGame.end();
+	}
+
+	private void displayText(String text, float x, float y) {
+		CharSequence charSequence = text;
+		GlyphLayout layout =new GlyphLayout();
+		layout.setText(word, charSequence);
+		word.draw(mainGame, text, x - layout.width/2,y);
 	}
 
 	@Override
