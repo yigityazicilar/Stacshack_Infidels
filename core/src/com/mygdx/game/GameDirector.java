@@ -4,6 +4,7 @@ package com.mygdx.game;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -123,9 +124,8 @@ public class GameDirector
 //			damage = 0;
 		}
 
+		if(!MainGame.playerTurn) MainGame.characterHealth -= 25;
 
-		MainGame.typedWord = "";
-		MainGame.completedWordCounter = 0;
 		future.cancel(true);
 
 	}
