@@ -55,17 +55,17 @@ public class MainGame implements Screen {
 	public Player player;
 	public GameDirector director = new GameDirector();
 
-	public MainGame(com.badlogic.gdx.Game game){
-		this.game = game;
+	public MainGame(com.badlogic.gdx.Game aGame, String picture){
+		game = aGame;
 		player = new Player("wizard", Role.FIGHTER);
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
 		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		mainGame = new SpriteBatch();
-		characterTexture = new Texture("wizard.gif");
+		characterTexture = new Texture(picture);
 		enemyTexture = new Texture("sans.gif");
-		character = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("wizard.gif").read());
+		character = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal(picture).read());
 		enemy = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("sans.gif").read());
 		backgroundTexture = new Texture("background.png");
 		backgroundSprite = new Sprite(backgroundTexture);
@@ -81,13 +81,10 @@ public class MainGame implements Screen {
 		Gdx.input.setInputProcessor(new InputAdapter(){
 			@Override
 			public boolean keyTyped(char character) {
-				if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-					if(typedWord.equals(currentWord)){
-						director.sendWordsComplete(true);
-					}else {
-						director.sendWordsComplete(false);
-					}
-					if(completedWordCounter == numberOfEnemies){
+				if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+					game.setScreen(new PauseMenu(game));
+				}else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+					if(completedWordCounter == numberOfEnemies - 1){
 						completedWordCounter = 0;
 						generateWords = true;
 					}else {
@@ -117,12 +114,11 @@ public class MainGame implements Screen {
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
 		if(generateWords) {
-			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 2, player);
+			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
 			generateWords = false;
 		}
 
 		if (wordTyped) {
-			String[] enemyWords = director.requestEnemyWord(1, 5, 2, player);
 			currentWord = enemyWords[completedWordCounter];
 			wordTyped = false;
 		}
