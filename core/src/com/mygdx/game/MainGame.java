@@ -38,6 +38,9 @@ public class MainGame implements Screen {
 	//Layouts
 	GlyphLayout layout;
 	// Variables
+	final String red = "[RED]";
+	final String green = "[GREEN]";
+	final String white = "[WHITE]";
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
@@ -54,6 +57,7 @@ public class MainGame implements Screen {
 	private int completedWordCounter = 0;
 	public Player player;
 	public GameDirector director = new GameDirector();
+	String highlighting = "";
 
 	public MainGame(com.badlogic.gdx.Game aGame, String picture){
 		game = aGame;
@@ -65,13 +69,14 @@ public class MainGame implements Screen {
 		screenHeight = Gdx.graphics.getHeight();
 		mainGame = new SpriteBatch();
 		characterTexture = new Texture(picture);
-		enemyTexture = new Texture("sans.gif");
+		enemyTexture = new Texture("goblin.gif");
 		character = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal(picture).read());
-		enemy = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("sans.gif").read());
+		enemy = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("goblin.gif").read());
 		backgroundTexture = new Texture("background.png");
 		backgroundSprite = new Sprite(backgroundTexture);
 		parameter.size = 84;
 		word = generator.generateFont(parameter);
+		word.getData().markupEnabled = true;
 		word.setColor(Color.WHITE);
 		word.getData().setScale(1);
 		Gdx.input.setInputProcessor(new InputAdapter(){
@@ -79,25 +84,39 @@ public class MainGame implements Screen {
 			public boolean keyTyped(char character) {
 				if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 					game.setScreen(new PauseMenu(game));
-				}else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+				} else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
 					if(completedWordCounter == numberOfEnemies - 1){
 						playerWords = new String[numberOfEnemies];
 						completedWordCounter = 0;
 						generateWords = true;
-					}else{
+					} else {
 						playerWords[completedWordCounter] = typedWord;
 						completedWordCounter++;
 					}
 					wordTyped = true;
 					typedWord = "";
 					System.out.println(typedWord);
-				}else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
+				} else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
 					if (typedWord.length() >= 1) {
 						typedWord = typedWord.substring(0, typedWord.length() - 1);
 						System.out.println(typedWord);
 					}
 				} else {
-					typedWord = typedWord + character;
+					if(typedWord.length() <= currentWord.length()) {
+						typedWord = typedWord + character;
+					}
+					if(typedWord.equals(currentWord)){
+						if(completedWordCounter == numberOfEnemies - 1){
+							playerWords = new String[numberOfEnemies];
+							completedWordCounter = 0;
+							generateWords = true;
+						} else {
+							playerWords[completedWordCounter] = typedWord;
+							completedWordCounter++;
+						}
+						wordTyped = true;
+						typedWord = "";
+					}
 					System.out.println(typedWord);
 				}
 				return super.keyTyped(character);
@@ -109,6 +128,7 @@ public class MainGame implements Screen {
 	@Override
 	public void render(float delta) {
 		mainGame.begin();
+		highlighting = "";
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
 		if(generateWords) {
@@ -121,22 +141,34 @@ public class MainGame implements Screen {
 			wordTyped = false;
 		}
 
-		displayText(currentWord, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
+		for (int i = 0; i < Math.min(typedWord.length(), currentWord.length()); i++) {
+			if(typedWord.charAt(i) == currentWord.charAt(i)){
+				highlighting = highlighting + green;
+			}else{
+				highlighting = highlighting + red;
+			}
+			highlighting = highlighting + currentWord.charAt(i);
+		}
+		highlighting = highlighting + white	+ currentWord.substring(Math.min(typedWord.length(), currentWord.length()));
+		if(typedWord.length() > currentWord.length()){
+			highlighting = red + currentWord;
+		}
+
+		displayText(highlighting, word, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
 
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 		elapsed += Gdx.graphics.getDeltaTime();
-		//Fix it so it gets centered with lower amount of enemies.
 		for (int i = 0; i < numberOfEnemies; i++) {
 			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
 		}
 		mainGame.end();
 	}
 
-	private void displayText(String text, float x, float y) {
+	private void displayText(String text, BitmapFont label, float x, float y) {
 		CharSequence charSequence = text;
 		GlyphLayout layout =new GlyphLayout();
-		layout.setText(word, charSequence);
-		word.draw(mainGame, text, x - layout.width/2,y);
+		layout.setText(label, charSequence);
+		label.draw(mainGame, text, x - layout.width / 2, y);
 	}
 
 	@Override
@@ -146,6 +178,7 @@ public class MainGame implements Screen {
 		enemyTexture.dispose();
 		backgroundTexture.dispose();
 		word.dispose();
+		// TODO dispose of everything
 	}
 
 	@Override
