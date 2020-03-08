@@ -122,7 +122,7 @@ public class GameDirector
 
 	public double getTimeUntilEndOfTimer()
 	{
-		return roundTask.scheduledExecutionTime();
+		return Math.max(0, roundTask.scheduledExecutionTime() - System.currentTimeMillis());
 	}
 
 	public GameDirector()
