@@ -54,7 +54,7 @@ public class MainMenu extends ApplicationAdapter implements Screen {
         start.addListener(new InputListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new MainGame(game));
+                game.setScreen(new CharacterSelection(game));
             }
 
             @Override
