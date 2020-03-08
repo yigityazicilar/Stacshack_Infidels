@@ -19,6 +19,9 @@ public class GameDirector
 	List<String> playerWordList;
 	List<String> enemyWordList;
 
+	String[] playerWords;
+	String[] enemyWords;
+
 	String[] currentWordList;
 	Entity target;
 
@@ -67,6 +70,7 @@ public class GameDirector
 				MainGame.generateWords = true;
 				MainGame.playerTurn = true;
 				endTimer();
+
 			}
 		}, duration, 999, TimeUnit.SECONDS);
 		currentWordList = enemyWordsArray;
@@ -113,18 +117,16 @@ public class GameDirector
 
 	public void endTimer()
 	{
-		if(!isPlayerTurn && !wordIsComplete)
-		{
-//			target.hurt(damage);
-//			damage = 0;
-		}
-		if(isPlayerTurn && wordIsComplete)
-		{
-//			target.hurt(damage);
-//			damage = 0;
-		}
+//		if(!isPlayerTurn && !wordIsComplete)
+//		{
+//			target.hurt(updateDamage(this.playerWords, this.enemyWords));
+//		}
+//		if(isPlayerTurn && wordIsComplete)
+//		{
+//			target.hurt(updateDamage(this.playerWords, this.enemyWords));
+//		}
 
-		if(!MainGame.playerTurn) MainGame.characterHealth -= 25;
+		if(MainGame.playerTurn) MainGame.characterHealth -= 25;
 
 		future.cancel(true);
 
@@ -136,8 +138,12 @@ public class GameDirector
 		endTimer();
 	}
 
-	public GameDirector(Role role)
+	public GameDirector(Role role, String[] playerWords, String[] enemyWords)
 	{
+
+		this.playerWords = playerWords;
+		this.enemyWords = enemyWords;
+
 		playerClass = role;
 		try
 		{

@@ -71,10 +71,11 @@ public class MainGame implements Screen {
 		screenHeight = Gdx.graphics.getHeight();
 		if(picture.equals("warrior.gif")) {
 			player = new Player("player", Role.WARRIOR);
-			director = new GameDirector(Role.WARRIOR);
+			director = new GameDirector(Role.WARRIOR, this.playerWrote, this.enemyWords);
+
 		}else {
 			player = new Player("player", Role.MAGICIAN);
-			director = new GameDirector(Role.MAGICIAN);
+			director = new GameDirector(Role.MAGICIAN, this.playerWrote, this.enemyWords);
 		}
 
 		enemy = new Enemy("goblin",Role.CREATURE);
