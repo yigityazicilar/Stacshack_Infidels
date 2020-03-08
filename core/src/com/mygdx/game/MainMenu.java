@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,11 +23,16 @@ public class MainMenu extends ApplicationAdapter implements Screen {
     private Stage stage;
     final int buttonWidth = 300;
     final int buttonHeight = 200;
+    private Music music;
 
     public MainMenu(Game aGame){
         game = aGame;
         stage = new Stage(new ScreenViewport());
 
+        music =  Gdx.audio.newMusic(Gdx.files.internal("MAINmenu.mp3"));
+        music.setVolume(0.8f);
+        music.setLooping(true);
+        music.play();
         Image background = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("background.png"))));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         background.setPosition(0, 0);
