@@ -1,10 +1,10 @@
 package com.mygdx.game;
 
 public enum Role {
-    WARRIOR("core/assets/warrior.txt", 50),
-    MAGICIAN("core/assets/magician.txt", 40),
-    CREATURE("core/assets/creature.txt", 10),
-    BOSS("core/assets/boss.txt", 80);
+    WARRIOR("warrior.txt", 50),
+    MAGICIAN("magician.txt", 40),
+    CREATURE("creature.txt", 10),
+    BOSS("boss.txt", 80);
 
     private String filepath;
 	private int maxHealth;
