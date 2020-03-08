@@ -103,6 +103,7 @@ public class MainGame implements Screen {
 					}else if (playerTurn){
 						playerTurn = false;
 						generateWords = true;
+						typedWord = "";
 					}else {
 						enemyWords[completedWordCounter] = typedWord;
 						completedWordCounter++;
@@ -114,7 +115,7 @@ public class MainGame implements Screen {
 						typedWord = typedWord.substring(0, typedWord.length() - 1);
 					}
 				} else {
-					if(typedWord.length() <= currentWord.length() && playerTurn == false) {
+					if(typedWord.length() <= currentWord.length() || playerTurn) {
 						typedWord = typedWord + character;
 					}
 					if(typedWord.equals(currentWord)){
@@ -130,6 +131,15 @@ public class MainGame implements Screen {
 						}
 						wordTyped = true;
 						typedWord = "";
+					}
+					if(playerTurn){
+						for (String word: playerWords) {
+							if(word.equals(typedWord)){
+								typedWord = "";
+								generateWords = true;
+								playerTurn = false;
+							}
+						}
 					}
 				}
 				return super.keyTyped(character);
