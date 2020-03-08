@@ -84,12 +84,7 @@ public class MainGame implements Screen {
 				if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 					game.setScreen(new PauseMenu(game));
 				}else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-					if(typedWord.equals(currentWord)){
-						director.sendWordsComplete(true);
-					}else {
-						director.sendWordsComplete(false);
-					}
-					if(completedWordCounter == numberOfEnemies){
+					if(completedWordCounter == numberOfEnemies - 1){
 						completedWordCounter = 0;
 						generateWords = true;
 					}else {
@@ -119,12 +114,11 @@ public class MainGame implements Screen {
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
 		if(generateWords) {
-			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 2, player);
+			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
 			generateWords = false;
 		}
 
 		if (wordTyped) {
-			String[] enemyWords = director.requestEnemyWord(1, 5, 2, player);
 			currentWord = enemyWords[completedWordCounter];
 			wordTyped = false;
 		}
