@@ -82,7 +82,6 @@ public class MainGame implements Screen {
 		characterHealth = player.getHealth();
 		characterMaxHeath = player.getMaxHealth();
 		enemyHealth = enemy.getHealth();
-		System.out.println(enemyHealth);
 		enemyMaxHealth = enemy.getMaxHealth();
 
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 10, player);
@@ -123,7 +122,6 @@ public class MainGame implements Screen {
 					}else if (playerTurn){
 						playerTurn = false;
 						generateWords = true;
-						System.out.println(typedWord.length());
 						typedWord = "";
 					}else {
 						playerWrote[completedWordCounter] = typedWord;
@@ -160,7 +158,11 @@ public class MainGame implements Screen {
 					}else if(playerTurn){
 						for (String word: playerWords) {
 							if(word.equals(typedWord)){
+								System.out.println(enemyHealth);
 								enemyHealth -= typedWord.length();
+								if (enemyHealth <= 0) {
+									enemyHealth = 0;
+								}
 								typedWord = "";
 								generateWords = true;
 								playerTurn = false;

@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import sun.rmi.rmic.Main;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -87,10 +86,8 @@ public class GameDirector
 				wordIsSet = true;
 
 				// Check for duplicates
-				System.out.println(randoWord);
 
 				for (String nextString : playerWordsArray) {
-					System.out.println(nextString);
 					if (nextString.equals(randoWord))
 						wordIsSet = false;
 				}
