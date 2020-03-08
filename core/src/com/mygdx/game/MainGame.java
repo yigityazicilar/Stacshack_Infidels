@@ -59,9 +59,6 @@ public class MainGame implements Screen {
 		this.game = game;
 		player = new Player("wizard", Role.FIGHTER);
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
-		for (String enemyWord : enemyWords) {
-			System.out.println(enemyWord);
-		}
 		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
@@ -130,7 +127,6 @@ public class MainGame implements Screen {
 			wordTyped = false;
 		}
 
-		System.out.println(currentWord);
 		displayText(currentWord, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
 
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
