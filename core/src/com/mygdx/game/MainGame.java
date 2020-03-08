@@ -41,6 +41,7 @@ public class MainGame implements Screen {
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
+	private int wordCounter = 0;
 	private String currentWord;
 	private String[] wordlist;
 	private Boolean wordTyped = false;
@@ -57,7 +58,10 @@ public class MainGame implements Screen {
 	public MainGame(com.badlogic.gdx.Game game){
 		this.game = game;
 		player = new Player("wizard", Role.FIGHTER);
-		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 2, player);
+		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
+		for (String enemyWord : enemyWords) {
+			System.out.println(enemyWord);
+		}
 		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
@@ -94,12 +98,15 @@ public class MainGame implements Screen {
 					}
 					wordTyped = true;
 					typedWord = "";
+					System.out.println(typedWord);
 				}else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
 					if (typedWord.length() >= 1) {
 						typedWord = typedWord.substring(0, typedWord.length() - 1);
+						System.out.println(typedWord);
 					}
 				} else {
 					typedWord = typedWord + character;
+					System.out.println(typedWord);
 				}
 				return super.keyTyped(character);
 			}
@@ -118,11 +125,12 @@ public class MainGame implements Screen {
 		}
 
 		if (wordTyped) {
+			String[] enemyWords = director.requestEnemyWord(1, 5, 2, player);
 			currentWord = enemyWords[completedWordCounter];
 			wordTyped = false;
 		}
 
-
+		System.out.println(currentWord);
 		displayText(currentWord, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
 
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);

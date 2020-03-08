@@ -41,10 +41,11 @@ public class GameDirector
 		for(int i = 0; i < enemyWordsArray.length; i++)
 		{
 			boolean wordListSet = false;
+			String randoWord = "";
 			while(!wordListSet)
 			{
 				int randomIndex = new Random().nextInt(enemyWordList.size() - 1);
-				String randoWord = enemyWordList.get(randomIndex);
+				randoWord = enemyWordList.get(randomIndex);
 
 				// Check if word respects difficulty
 				if (wordDims[0] <= randoWord.length() && wordDims[1] >= randoWord.length())
@@ -55,6 +56,7 @@ public class GameDirector
 					if(nextString.equals(randoWord))
 						wordListSet = false;
 			}
+			enemyWordsArray[i] = randoWord;
 		}
 
 		// Set timer
