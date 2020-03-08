@@ -113,7 +113,7 @@ public class MainGame implements Screen {
 					}else if (playerTurn){
 						playerTurn = false;
 						generateWords = true;
-						enemyHealth -= typedWord.length();
+						System.out.println(typedWord.length());
 						typedWord = "";
 					}else {
 						enemyWords[completedWordCounter] = typedWord;
@@ -129,29 +129,30 @@ public class MainGame implements Screen {
 					if(typedWord.length() <= currentWord.length() || playerTurn) {
 						typedWord = typedWord + character;
 					}
-					if(typedWord.equals(currentWord)){
-						if(completedWordCounter == numberOfEnemies - 1 && playerTurn == false){
+					if(typedWord.equals(currentWord)) {
+						if (completedWordCounter == numberOfEnemies - 1 && playerTurn == false) {
 							enemyWords = new String[numberOfEnemies];
 							completedWordCounter = 0;
 							GameDirector.future.cancel(true);
 							generateWords = true;
 							playerTurn = true;
-						}else if ( playerTurn == false ){
+						} else if (playerTurn == false) {
 							enemyWords[completedWordCounter] = typedWord;
 							completedWordCounter++;
 						}
 						wordTyped = true;
 						typedWord = "";
-					}
-					if(playerTurn){
+					}else if(playerTurn){
 						for (String word: playerWords) {
 							if(word.equals(typedWord)){
+								enemyHealth -= typedWord.length();
 								typedWord = "";
 								generateWords = true;
 								playerTurn = false;
 							}
 						}
 					}
+
 				}
 				return super.keyTyped(character);
 			}
@@ -193,8 +194,8 @@ public class MainGame implements Screen {
 
 			mainGame.draw(characterAnimation.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 			mainGame.draw(healthBar, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),200,40);
-			System.out.println(characterHealth);
-			System.out.println(characterMaxHeath);
+//			System.out.println(characterHealth);
+//			System.out.println(characterMaxHeath);
 			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(characterHealth/characterMaxHeath)*200,40);
 			elapsed += Gdx.graphics.getDeltaTime();
 			for (int i = 0; i < numberOfEnemies; i++) {
