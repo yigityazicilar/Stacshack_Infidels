@@ -33,20 +33,24 @@ public class MainMenu extends ApplicationAdapter implements Screen {
         music.setVolume(0.8f);
         music.setLooping(true);
         music.play();
+
         Image background = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("background.png"))));
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         background.setPosition(0, 0);
+
         Image logo = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("logoTypeWarriors.png"))));
         logo.setSize(300, 300);
         logo.setPosition(Gdx.graphics.getWidth() / 2 - logo.getWidth() / 2, (Gdx.graphics.getHeight() / 5) * 4 - logo.getHeight() / 2);
+
         Image logoText = new Image(new TextureRegionDrawable(new Texture(Gdx.files.internal("KeyboardWarriors.png"))));
         logoText.setSize(702, 86);
         logoText.setPosition(Gdx.graphics.getWidth() / 2 - logoText.getWidth() / 2,  (Gdx.graphics.getHeight() / 5) * 4 - logoText.getHeight() / 2 - logo.getHeight() / 2 - 50);
+
         ImageButton start = new ImageButton(new ImageButton.ImageButtonStyle());
         start.setSize(buttonWidth, buttonHeight);
         start.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("start_button.png")));
         start.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("start_button.png")));
-        start.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 , Gdx.graphics.getHeight() / 2 - start.getHeight() / 2 - 50);
+        start.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 , Gdx.graphics.getHeight() / 2 - start.getHeight() / 2 - 100 );
         start.addListener(new InputListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -58,11 +62,12 @@ public class MainMenu extends ApplicationAdapter implements Screen {
                 return true;
             }
         });
+
         ImageButton exit = new ImageButton(new ImageButton.ImageButtonStyle());
         exit.setSize(buttonWidth, buttonHeight);
         exit.getStyle().imageUp = new TextureRegionDrawable(new Texture(Gdx.files.internal("exit_button.png")));
         exit.getStyle().imageDown = new TextureRegionDrawable(new Texture(Gdx.files.internal("exit_button.png")));
-        exit.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 , Gdx.graphics.getHeight() / 2 - start.getHeight() / 2 - 250);
+        exit.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 , Gdx.graphics.getHeight() / 2 - start.getHeight() / 2 - 350);
         exit.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -74,6 +79,7 @@ public class MainMenu extends ApplicationAdapter implements Screen {
                 System.exit(0);
             }
         });
+
         stage.addActor(background);
         stage.addActor(logo);
         stage.addActor(logoText);
@@ -115,7 +121,6 @@ public class MainMenu extends ApplicationAdapter implements Screen {
 
     @Override
     public void dispose() {
-        Gdx.input.setInputProcessor(null);
         stage.dispose();
     }
 }

@@ -41,11 +41,13 @@ public class MainGame implements Screen {
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
-	private int wordCounter = 0;
 	private String currentWord;
 	private String[] wordlist;
 	private Boolean wordTyped = false;
+	private Boolean generateWords = false;
 	private String typedWord = "";
+	private int numberOfEnemies = 5;
+	private String[] enemyWords;
 	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 	private int completedWordCounter = 0;
@@ -55,7 +57,8 @@ public class MainGame implements Screen {
 	public MainGame(com.badlogic.gdx.Game game){
 		this.game = game;
 		player = new Player("wizard", Role.FIGHTER);
-		// currentword
+		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 2, player);
+		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		mainGame = new SpriteBatch();
@@ -78,16 +81,25 @@ public class MainGame implements Screen {
 			@Override
 			public boolean keyTyped(char character) {
 				if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+					if(typedWord.equals(currentWord)){
+						director.sendWordsComplete(true);
+					}else {
+						director.sendWordsComplete(false);
+					}
+					if(completedWordCounter == numberOfEnemies){
+						completedWordCounter = 0;
+						generateWords = true;
+					}else {
+						completedWordCounter++;
+					}
+					wordTyped = true;
 					typedWord = "";
-					System.out.println(typedWord);
 				}else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
 					if (typedWord.length() >= 1) {
 						typedWord = typedWord.substring(0, typedWord.length() - 1);
-						System.out.println(typedWord);
 					}
 				} else {
 					typedWord = typedWord + character;
-					System.out.println(typedWord);
 				}
 				return super.keyTyped(character);
 			}
@@ -100,16 +112,16 @@ public class MainGame implements Screen {
 		mainGame.begin();
 		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
+		if(generateWords) {
+			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 2, player);
+			generateWords = false;
+		}
+
 		if (wordTyped) {
-			String[] enemyWords = director.requestEnemyWord(1, 5, 2, player);
 			currentWord = enemyWords[completedWordCounter];
 			wordTyped = false;
 		}
 
-		List<String> enemyWords = new ArrayList<>();
-		for (int i = 0; i < 3; i++) {
-//			enemyWords.add(getRandomWord());
-		}
 
 		displayText(currentWord, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
 

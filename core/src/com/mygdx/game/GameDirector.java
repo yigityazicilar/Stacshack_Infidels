@@ -60,6 +60,7 @@ public class GameDirector
 		// Set timer
 		startRoundTimer(duration);
 		currentWordList = enemyWordsArray;
+		this.target = target;
 		return enemyWordsArray;
 	}
 
@@ -87,6 +88,7 @@ public class GameDirector
 
 		startRoundTimer(3);
 		currentWordList = playerWordsArray;
+		this.target = target;
 		return playerWordsArray;
 	}
 
@@ -115,9 +117,11 @@ public class GameDirector
 
 	}
 
-	public void sendWordsComplete()
+	public void sendWordsComplete(Boolean wordIsComplete)
 	{
-		wordIsComplete = true;
+		this.wordIsComplete = wordIsComplete;
+		endTimer();
+		roundTimer.cancel();
 	}
 
 	public double getTimeUntilEndOfTimer()
