@@ -13,7 +13,7 @@ public class Player extends Entity{
                 this.health = 100;
                 break;
             case MAGICIAN:
-                this.health = 25;
+                this.health = 100;
                 break;
             default :
                 System.out.println("Could not import role");

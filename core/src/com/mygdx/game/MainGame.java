@@ -58,8 +58,8 @@ public class MainGame implements Screen {
 	private Enemy enemy;
 	private GameDirector director;
 
-	private int characterHealth;
-	private int characterMaxHeath;
+	public static int characterHealth = 100;
+	private int characterMaxHeath = 100;
 	private int enemyHealth;
 	private int enemyMaxHealth;
 
@@ -79,8 +79,7 @@ public class MainGame implements Screen {
 
 		enemy = new Enemy("goblin",Role.CREATURE);
 
-		characterHealth = player.getHealth();
-		characterMaxHeath = player.getMaxHealth();
+
 		enemyHealth = enemy.getHealth();
 		enemyMaxHealth = enemy.getMaxHealth();
 
@@ -180,6 +179,7 @@ public class MainGame implements Screen {
 	@Override
 	public void render(float delta) {
 		mainGame.begin();
+		if(characterHealth <= 0) characterHealth = 0;
 		if(!playerTurn) {
 			highlighting = "";
 			mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
@@ -218,7 +218,6 @@ public class MainGame implements Screen {
 				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
 				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100)),20);
 				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100)),20);
-				System.out.println(enemyHealth/enemyMaxHealth);
 			}
 		}else {
 			mainGame.flush();
