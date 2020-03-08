@@ -43,12 +43,12 @@ public class MainGame implements Screen {
 	private float screenHeight;
 	private int wordCounter = 0;
 	private String currentWord;
-	private String[] wordlist;
 	private Boolean wordTyped = false;
 	private Boolean generateWords = false;
 	private String typedWord = "";
 	private int numberOfEnemies = 5;
 	private String[] enemyWords;
+	private String[] playerWords;
 	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 	private int completedWordCounter = 0;
@@ -59,6 +59,7 @@ public class MainGame implements Screen {
 		game = aGame;
 		player = new Player("wizard", Role.FIGHTER);
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
+		playerWords = new String[numberOfEnemies];
 		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
@@ -75,9 +76,6 @@ public class MainGame implements Screen {
 		word.getData().setScale(1);
 		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		FileHandle file = Gdx.files.internal("wordlist.txt");
-		String text = file.readString();
-		wordlist = text.split("\\s+");
 		Gdx.input.setInputProcessor(new InputAdapter(){
 			@Override
 			public boolean keyTyped(char character) {
@@ -85,9 +83,11 @@ public class MainGame implements Screen {
 					game.setScreen(new PauseMenu(game));
 				}else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
 					if(completedWordCounter == numberOfEnemies - 1){
+						playerWords = new String[numberOfEnemies];
 						completedWordCounter = 0;
 						generateWords = true;
-					}else {
+					}else{
+						playerWords[completedWordCounter] = typedWord;
 						completedWordCounter++;
 					}
 					wordTyped = true;

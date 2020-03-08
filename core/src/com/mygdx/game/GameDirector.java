@@ -17,6 +17,7 @@ public class GameDirector
 
 	String[] currentWordList;
 	Entity target;
+	int damage;
 
 	boolean isPlayerTurn;
 	boolean wordIsComplete;
@@ -29,6 +30,8 @@ public class GameDirector
 			endTimer();
 		}
 	};
+
+
 	public String[] requestEnemyWord(int wordDifficulty, int numberOfWords, int duration, Entity target)
 	{
 		// Initialize vars
@@ -143,4 +146,16 @@ public class GameDirector
 			System.out.println("Cannot get file! System abort!");
 		}
 	}
+
+	public void updateDamage(String[] playerWords, String[] enemyWords){
+
+		for(String word : playerWords){
+			for(String attack : enemyWords){
+				if(!word.equals(attack))
+					damage += word.length();
+				damage += word.length();
+			}
+		}
+	}
+
 }

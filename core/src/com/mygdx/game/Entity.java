@@ -3,7 +3,6 @@ package com.mygdx.game;
 public abstract class Entity {
     protected String name;
     protected int health = 100;
-    protected double multiplier;
 
     public Entity(String name, Role role){
         this.name = name;
@@ -29,7 +28,6 @@ public abstract class Entity {
         this.health = health;
     }
 
-    public void importRole(){
-    }
+    public abstract void importRole(Role role);
 
 }
