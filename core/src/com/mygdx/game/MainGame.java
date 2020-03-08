@@ -127,7 +127,8 @@ public class MainGame implements Screen {
 
 		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
 		elapsed += Gdx.graphics.getDeltaTime();
-		for (int i = 0; i < 5; i++) {
+		//Fix it so it gets centered with lower amount of enemies.
+		for (int i = 0; i < numberOfEnemies; i++) {
 			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - (5)*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
 		}
 		mainGame.end();
