@@ -2,9 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,13 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class MainGame implements Screen {
 	private Game game;
@@ -29,9 +20,11 @@ public class MainGame implements Screen {
 	private Texture characterTexture;
 	private Texture enemyTexture;
 	private Texture backgroundTexture;
+	private Texture healthBar;
+	private Texture healthUnit;
 	// Animations
-	private Animation<TextureRegion> character;
-	private Animation<TextureRegion> enemy;
+	private Animation<TextureRegion> characterAnimation;
+	private Animation<TextureRegion> enemyAnimation;
 	// Bitmaps
 	private BitmapFont word;
 	// Sprites
@@ -58,8 +51,15 @@ public class MainGame implements Screen {
 	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 	private int completedWordCounter = 0;
-	public Player player;
-	public GameDirector director;
+	private Player player;
+	private Enemy enemy;
+	private GameDirector director;
+
+	private int characterHealth;
+	private int characterMaxHeath;
+	private int enemyHealth;
+	private int enemyMaxHealth;
+
 	String highlighting = "";
 
 	public MainGame(com.badlogic.gdx.Game aGame, String picture){
@@ -73,16 +73,26 @@ public class MainGame implements Screen {
 			player = new Player("player", Role.MAGICIAN);
 			director = new GameDirector(Role.MAGICIAN);
 		}
+
+		enemy = new Enemy("goblin",Role.CREATURE);
+
+		characterHealth = player.getHealth();
+		characterMaxHeath = player.getMaxHealth();
+		enemyHealth = enemy.getHealth();
+		enemyMaxHealth = enemy.getMaxHealth();
+
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 10, player);
 		playerWords = new String[3];
 		currentWord = enemyWords[completedWordCounter];
 		mainGame = new SpriteBatch();
 		characterTexture = new Texture(picture);
 		enemyTexture = new Texture("goblin.gif");
-		character = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal(picture).read());
-		enemy = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("goblin.gif").read());
+		characterAnimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal(picture).read());
+		enemyAnimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("goblin.gif").read());
 		backgroundTexture = new Texture("background.png");
 		backgroundSprite = new Sprite(backgroundTexture);
+		healthBar = new Texture("healthBar.png");
+		healthUnit = new Texture("healthUnit.png");
 		parameter.size = 84;
 		word = generator.generateFont(parameter);
 		word.getData().markupEnabled = true;
@@ -103,6 +113,7 @@ public class MainGame implements Screen {
 					}else if (playerTurn){
 						playerTurn = false;
 						generateWords = true;
+						enemyHealth -= typedWord.length();
 						typedWord = "";
 					}else {
 						enemyWords[completedWordCounter] = typedWord;
@@ -180,10 +191,16 @@ public class MainGame implements Screen {
 
 			displayText(highlighting, word, screenWidth / 2, screenHeight - enemyTexture.getHeight() - 200);
 
-			mainGame.draw(character.getKeyFrame(elapsed), screenWidth / 2 - characterTexture.getWidth() / 2, 20.0f);
+			mainGame.draw(characterAnimation.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
+			mainGame.draw(healthBar, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),200,40);
+			System.out.println(characterHealth);
+			System.out.println(characterMaxHeath);
+			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(characterHealth/characterMaxHeath)*200,40);
 			elapsed += Gdx.graphics.getDeltaTime();
 			for (int i = 0; i < numberOfEnemies; i++) {
-				mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies * enemyTexture.getWidth()) / 2 + i * enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
+				mainGame.draw(enemyAnimation.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight());
+				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
+				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, (enemyHealth/enemyMaxHealth)*100,20);
 			}
 		}else {
 			mainGame.flush();
@@ -201,13 +218,17 @@ public class MainGame implements Screen {
 				CharSequence charSequence = playerWords[i];
 				GlyphLayout layout = new GlyphLayout();
 				layout.setText(word, charSequence);
-				word.draw(mainGame, playerWords[i], screenWidth / 2  - layout.width / 2, screenHeight / 2 + 100 - i * 80 );
+				word.draw(mainGame, playerWords[i], screenWidth / 2  - layout.width / 2, screenHeight / 2 + 200 - i * 80 );
 			}
 
-			mainGame.draw(character.getKeyFrame(elapsed), screenWidth / 2 - characterTexture.getWidth() / 2, 20.0f);
+			mainGame.draw(characterAnimation.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
+			mainGame.draw(healthBar, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),200,40);
+			mainGame.draw(healthUnit, screenWidth/2 - characterTexture.getWidth()/2 + 115, characterTexture.getHeight(),(characterHealth/characterMaxHeath)*200,40);
 			elapsed += Gdx.graphics.getDeltaTime();
 			for (int i = 0; i < numberOfEnemies; i++) {
-				mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies * enemyTexture.getWidth()) / 2 + i * enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
+				mainGame.draw(enemyAnimation.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight());
+				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
+				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, (enemyHealth/enemyMaxHealth)*100,20);
 			}
 		}
 		mainGame.end();

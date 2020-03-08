@@ -2,11 +2,12 @@ package com.mygdx.game;
 
 public abstract class Entity {
     protected String name;
-    protected int health = 100;
+    protected int health;
 	protected Role entityRole;
 
     public Entity(String name, Role role){
         this.name = name;
+        this.health = role.getMaxHealth();
 		this.entityRole = role;
 	}
 
