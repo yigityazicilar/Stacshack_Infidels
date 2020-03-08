@@ -46,7 +46,7 @@ public class MainGame implements Screen {
 	private Boolean wordTyped = false;
 	private Boolean generateWords = false;
 	private String typedWord = "";
-	private int numberOfEnemies = 5;
+	private int numberOfEnemies = 4;
 	private String[] enemyWords;
 	private String[] playerWords;
 	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
@@ -127,7 +127,7 @@ public class MainGame implements Screen {
 		elapsed += Gdx.graphics.getDeltaTime();
 		//Fix it so it gets centered with lower amount of enemies.
 		for (int i = 0; i < numberOfEnemies; i++) {
-			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - (5)*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
+			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
 		}
 		mainGame.end();
 	}
