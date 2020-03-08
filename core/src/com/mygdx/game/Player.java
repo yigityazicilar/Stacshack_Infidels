@@ -10,7 +10,7 @@ public class Player extends Entity{
 
         switch(role){
             case WARRIOR:
-                this.health = 50;
+                this.health = 100;
                 break;
             case MAGICIAN:
                 this.health = 25;

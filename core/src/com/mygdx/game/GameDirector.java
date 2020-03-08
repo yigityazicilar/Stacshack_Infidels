@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import sun.rmi.rmic.Main;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +21,6 @@ public class GameDirector
 
 	String[] currentWordList;
 	Entity target;
-	int damage;
 
 	boolean isPlayerTurn;
 	boolean wordIsComplete;
@@ -116,15 +117,18 @@ public class GameDirector
 	{
 		if(!isPlayerTurn && !wordIsComplete)
 		{
-			target.hurt(damage);
-			damage = 0;
+//			target.hurt(damage);
+//			damage = 0;
 		}
 		if(isPlayerTurn && wordIsComplete)
 		{
-			target.hurt(damage);
-			damage = 0;
+//			target.hurt(damage);
+//			damage = 0;
 		}
 
+
+		MainGame.typedWord = "";
+		MainGame.completedWordCounter = 0;
 		future.cancel(true);
 
 	}
@@ -149,15 +153,13 @@ public class GameDirector
 		}
 	}
 
-	public void updateDamage(String[] playerWords, String[] enemyWords){
+	public int updateDamage(String[] playerWords, String[] enemyWords){
+		int damage = 0;
 
-		for(String word : playerWords){
-			for(String attack : enemyWords){
-				if(!word.equals(attack))
-					damage += word.length();
-				damage += word.length();
-			}
+		for (int i = 0; i < playerWords.length; i++) {
+			if(!playerWords[i].equals(enemyWords[i])) damage += enemyWords[i].length();
 		}
+		return damage;
 	}
 
 }

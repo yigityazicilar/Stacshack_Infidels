@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
+import java.util.Arrays;
+
 public class MainGame implements Screen {
 	private Game game;
 
@@ -44,13 +46,14 @@ public class MainGame implements Screen {
 	private Boolean wordTyped = false;
 	static Boolean generateWords = false;
 	static Boolean sceneChanged = false;
-	private String typedWord = "";
+	public static String typedWord = "";
 	private int numberOfEnemies = 4;
-	private String[] enemyWords;
+	public static String[] playerWrote;
+	public static String[] enemyWords;
 	private String[] playerWords;
 	private FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("NotoSans-Regular.ttf"));
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-	private int completedWordCounter = 0;
+	public static int completedWordCounter = 0;
 	private Player player;
 	private Enemy enemy;
 	private GameDirector director;
@@ -83,6 +86,7 @@ public class MainGame implements Screen {
 		enemyMaxHealth = enemy.getMaxHealth();
 
 		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 10, player);
+		playerWrote = new String[numberOfEnemies];
 		playerWords = new String[3];
 		currentWord = enemyWords[completedWordCounter];
 		mainGame = new SpriteBatch();
@@ -106,7 +110,12 @@ public class MainGame implements Screen {
 					game.setScreen(new PauseMenu(game));
 				} else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
 					if(completedWordCounter == numberOfEnemies - 1 && playerTurn == false){
-						playerWords = new String[numberOfEnemies];
+						playerWrote[completedWordCounter] = typedWord;
+						System.out.println(Arrays.deepToString(playerWrote));
+						System.out.println(Arrays.deepToString(enemyWords));
+						System.out.println(director.updateDamage(playerWrote, enemyWords));
+						characterHealth -= director.updateDamage(playerWrote, enemyWords);
+						playerWrote = new String[numberOfEnemies];
 						completedWordCounter = 0;
 						GameDirector.future.cancel(true);
 						generateWords = true;
@@ -117,7 +126,7 @@ public class MainGame implements Screen {
 						System.out.println(typedWord.length());
 						typedWord = "";
 					}else {
-						enemyWords[completedWordCounter] = typedWord;
+						playerWrote[completedWordCounter] = typedWord;
 						completedWordCounter++;
 					}
 					wordTyped = true;
@@ -132,13 +141,18 @@ public class MainGame implements Screen {
 					}
 					if(typedWord.equals(currentWord)) {
 						if (completedWordCounter == numberOfEnemies - 1 && playerTurn == false) {
-							enemyWords = new String[numberOfEnemies];
+							playerWrote[completedWordCounter] = typedWord;
+							System.out.println(Arrays.deepToString(playerWrote));
+							System.out.println(Arrays.deepToString(enemyWords));
+							System.out.println(director.updateDamage(playerWrote, enemyWords));
+							characterHealth -= director.updateDamage(playerWrote, enemyWords);
+							playerWrote = new String[numberOfEnemies];
 							completedWordCounter = 0;
 							GameDirector.future.cancel(true);
 							generateWords = true;
 							playerTurn = true;
 						} else if (playerTurn == false) {
-							enemyWords[completedWordCounter] = typedWord;
+							playerWrote[completedWordCounter] = typedWord;
 							completedWordCounter++;
 						}
 						wordTyped = true;
@@ -147,7 +161,6 @@ public class MainGame implements Screen {
 						for (String word: playerWords) {
 							if(word.equals(typedWord)){
 								enemyHealth -= typedWord.length();
-								System.out.println(enemyHealth);
 								typedWord = "";
 								generateWords = true;
 								playerTurn = false;
@@ -201,8 +214,7 @@ public class MainGame implements Screen {
 			for (int i = 0; i < numberOfEnemies; i++) {
 				mainGame.draw(enemyAnimation.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight());
 				mainGame.draw(healthBar, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth() + 82, screenHeight - enemyTexture.getHeight() - 50, 100,20);
-				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100),20));
-				System.out.println(enemyHealth/enemyMaxHealth);
+				mainGame.draw(healthUnit, (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth()+ 82, screenHeight - enemyTexture.getHeight() - 50, ((int) Math.floor(((double) enemyHealth/enemyMaxHealth)*100)),20);
 			}
 		}else {
 			mainGame.flush();
@@ -252,6 +264,7 @@ public class MainGame implements Screen {
 		word.dispose();
 		// TODO dispose of everything
 	}
+
 
 	@Override
 	public void show() {
