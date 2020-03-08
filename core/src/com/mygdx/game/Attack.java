@@ -1,7 +1,15 @@
 package com.mygdx.game;
 
 public class Attack{
-    private String word;
-//    private
+    private double damage;
+    private int cooldown;
+    private int speed;
+
+
+    public Attack(double damage, int cooldown, int speed){
+        this.damage = damage;
+        this.cooldown = cooldown;
+        this.speed = speed;
+    }
 
 }
