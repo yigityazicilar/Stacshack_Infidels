@@ -33,7 +33,7 @@ public class GameDirector
 //	Timer roundTimer;
 
 	ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-	ScheduledFuture<?> future;
+	static ScheduledFuture<?> future;
 
 	public String[] requestEnemyWord(int wordDifficulty, int numberOfWords, int duration, Entity target)
 	{
@@ -110,7 +110,7 @@ public class GameDirector
 				MainGame.playerTurn = false;
 				endTimer();
 			}
-		}, 3, 999, TimeUnit.SECONDS);
+		}, 5, 999, TimeUnit.SECONDS);
 		currentWordList = playerWordsArray;
 		this.target = target;
 		return playerWordsArray;

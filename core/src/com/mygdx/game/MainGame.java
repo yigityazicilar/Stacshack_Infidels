@@ -73,7 +73,7 @@ public class MainGame implements Screen {
 			player = new Player("player", Role.MAGICIAN);
 			director = new GameDirector(Role.MAGICIAN);
 		}
-		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
+		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 10, player);
 		playerWords = new String[3];
 		currentWord = enemyWords[completedWordCounter];
 		mainGame = new SpriteBatch();
@@ -97,6 +97,7 @@ public class MainGame implements Screen {
 					if(completedWordCounter == numberOfEnemies - 1 && playerTurn == false){
 						playerWords = new String[numberOfEnemies];
 						completedWordCounter = 0;
+						GameDirector.future.cancel(true);
 						generateWords = true;
 						playerTurn = true;
 					}else if (playerTurn){
@@ -113,13 +114,14 @@ public class MainGame implements Screen {
 						typedWord = typedWord.substring(0, typedWord.length() - 1);
 					}
 				} else {
-					if(typedWord.length() <= currentWord.length()) {
+					if(typedWord.length() <= currentWord.length() && playerTurn == false) {
 						typedWord = typedWord + character;
 					}
 					if(typedWord.equals(currentWord)){
 						if(completedWordCounter == numberOfEnemies - 1 && playerTurn == false){
 							enemyWords = new String[numberOfEnemies];
 							completedWordCounter = 0;
+							GameDirector.future.cancel(true);
 							generateWords = true;
 							playerTurn = true;
 						}else if ( playerTurn == false ){
@@ -139,13 +141,6 @@ public class MainGame implements Screen {
 	@Override
 	public void render(float delta) {
 		mainGame.begin();
-		if (sceneChanged){
-			try {
-				TimeUnit.SECONDS.sleep(2 );
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		if(!playerTurn) {
 			highlighting = "";
 			mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
@@ -182,14 +177,6 @@ public class MainGame implements Screen {
 			}
 		}else {
 			mainGame.flush();
-
-			if (sceneChanged){
-				try {
-					TimeUnit.SECONDS.sleep(2 );
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
 
 			mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
