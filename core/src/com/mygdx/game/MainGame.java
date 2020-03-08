@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class MainGame implements Screen {
 	private Game game;
@@ -41,13 +42,15 @@ public class MainGame implements Screen {
 	final String red = "[RED]";
 	final String green = "[GREEN]";
 	final String white = "[WHITE]";
+	static Boolean playerTurn = false;
 	private float elapsed;
 	private float screenWidth;
 	private float screenHeight;
 	private int wordCounter = 0;
 	private String currentWord;
 	private Boolean wordTyped = false;
-	private Boolean generateWords = false;
+	static Boolean generateWords = false;
+	static Boolean sceneChanged = false;
 	private String typedWord = "";
 	private int numberOfEnemies = 4;
 	private String[] enemyWords;
@@ -56,17 +59,23 @@ public class MainGame implements Screen {
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 	private int completedWordCounter = 0;
 	public Player player;
-	public GameDirector director = new GameDirector();
+	public GameDirector director;
 	String highlighting = "";
 
 	public MainGame(com.badlogic.gdx.Game aGame, String picture){
 		game = aGame;
-		player = new Player("wizard", Role.FIGHTER);
-		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
-		playerWords = new String[numberOfEnemies];
-		currentWord = enemyWords[completedWordCounter];
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
+		if(picture.equals("warrior.gif")) {
+			player = new Player("player", Role.WARRIOR);
+			director = new GameDirector(Role.WARRIOR);
+		}else {
+			player = new Player("player", Role.MAGICIAN);
+			director = new GameDirector(Role.MAGICIAN);
+		}
+		enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
+		playerWords = new String[3];
+		currentWord = enemyWords[completedWordCounter];
 		mainGame = new SpriteBatch();
 		characterTexture = new Texture(picture);
 		enemyTexture = new Texture("goblin.gif");
@@ -85,39 +94,41 @@ public class MainGame implements Screen {
 				if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 					game.setScreen(new PauseMenu(game));
 				} else if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
-					if(completedWordCounter == numberOfEnemies - 1){
+					if(completedWordCounter == numberOfEnemies - 1 && playerTurn == false){
 						playerWords = new String[numberOfEnemies];
 						completedWordCounter = 0;
 						generateWords = true;
-					} else {
-						playerWords[completedWordCounter] = typedWord;
+						playerTurn = true;
+					}else if (playerTurn){
+						playerTurn = false;
+						generateWords = true;
+					}else {
+						enemyWords[completedWordCounter] = typedWord;
 						completedWordCounter++;
 					}
 					wordTyped = true;
 					typedWord = "";
-					System.out.println(typedWord);
 				} else if(Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)){
 					if (typedWord.length() >= 1) {
 						typedWord = typedWord.substring(0, typedWord.length() - 1);
-						System.out.println(typedWord);
 					}
 				} else {
 					if(typedWord.length() <= currentWord.length()) {
 						typedWord = typedWord + character;
 					}
 					if(typedWord.equals(currentWord)){
-						if(completedWordCounter == numberOfEnemies - 1){
-							playerWords = new String[numberOfEnemies];
+						if(completedWordCounter == numberOfEnemies - 1 && playerTurn == false){
+							enemyWords = new String[numberOfEnemies];
 							completedWordCounter = 0;
 							generateWords = true;
-						} else {
-							playerWords[completedWordCounter] = typedWord;
+							playerTurn = true;
+						}else if ( playerTurn == false ){
+							enemyWords[completedWordCounter] = typedWord;
 							completedWordCounter++;
 						}
 						wordTyped = true;
 						typedWord = "";
 					}
-					System.out.println(typedWord);
 				}
 				return super.keyTyped(character);
 			}
@@ -128,38 +139,79 @@ public class MainGame implements Screen {
 	@Override
 	public void render(float delta) {
 		mainGame.begin();
-		highlighting = "";
-		mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
-
-		if(generateWords) {
-			enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
-			generateWords = false;
-		}
-
-		if (wordTyped) {
-			currentWord = enemyWords[completedWordCounter];
-			wordTyped = false;
-		}
-
-		for (int i = 0; i < Math.min(typedWord.length(), currentWord.length()); i++) {
-			if(typedWord.charAt(i) == currentWord.charAt(i)){
-				highlighting = highlighting + green;
-			}else{
-				highlighting = highlighting + red;
+		if (sceneChanged){
+			try {
+				TimeUnit.SECONDS.sleep(2 );
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			highlighting = highlighting + currentWord.charAt(i);
 		}
-		highlighting = highlighting + white	+ currentWord.substring(Math.min(typedWord.length(), currentWord.length()));
-		if(typedWord.length() > currentWord.length()){
-			highlighting = red + currentWord;
-		}
+		if(!playerTurn) {
+			highlighting = "";
+			mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
 
-		displayText(highlighting, word, screenWidth/2, screenHeight - enemyTexture.getHeight() - 200);
+			if (generateWords) {
+				enemyWords = director.requestEnemyWord(5, numberOfEnemies, 6, player);
+				generateWords = false;
+			}
 
-		mainGame.draw(character.getKeyFrame(elapsed), screenWidth/2 - characterTexture.getWidth()/2, 20.0f);
-		elapsed += Gdx.graphics.getDeltaTime();
-		for (int i = 0; i < numberOfEnemies; i++) {
-			mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies*enemyTexture.getWidth())/2 + i*enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
+			if (wordTyped) {
+				currentWord = enemyWords[completedWordCounter];
+				wordTyped = false;
+			}
+
+			for (int i = 0; i < Math.min(typedWord.length(), currentWord.length()); i++) {
+				if (typedWord.charAt(i) == currentWord.charAt(i)) {
+					highlighting = highlighting + green;
+				} else {
+					highlighting = highlighting + red;
+				}
+				highlighting = highlighting + currentWord.charAt(i);
+			}
+			highlighting = highlighting + white + currentWord.substring(Math.min(typedWord.length(), currentWord.length()));
+			if (typedWord.length() > currentWord.length()) {
+				highlighting = red + currentWord;
+			}
+
+			displayText(highlighting, word, screenWidth / 2, screenHeight - enemyTexture.getHeight() - 200);
+
+			mainGame.draw(character.getKeyFrame(elapsed), screenWidth / 2 - characterTexture.getWidth() / 2, 20.0f);
+			elapsed += Gdx.graphics.getDeltaTime();
+			for (int i = 0; i < numberOfEnemies; i++) {
+				mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies * enemyTexture.getWidth()) / 2 + i * enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
+			}
+		}else {
+			mainGame.flush();
+
+			if (sceneChanged){
+				try {
+					TimeUnit.SECONDS.sleep(2 );
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+			mainGame.draw(backgroundSprite, 0, 0, screenWidth, screenHeight);
+
+			if (generateWords) {
+				playerWords = director.requestPlayerWordBatch();
+				generateWords = false;
+			}
+
+			word.setColor(Color.RED);
+
+			for (int i = 0; i < 3; i++) {
+				CharSequence charSequence = playerWords[i];
+				GlyphLayout layout = new GlyphLayout();
+				layout.setText(word, charSequence);
+				word.draw(mainGame, playerWords[i], screenWidth / 2  - layout.width / 2, screenHeight / 2 + 100 - i * 80 );
+			}
+
+			mainGame.draw(character.getKeyFrame(elapsed), screenWidth / 2 - characterTexture.getWidth() / 2, 20.0f);
+			elapsed += Gdx.graphics.getDeltaTime();
+			for (int i = 0; i < numberOfEnemies; i++) {
+				mainGame.draw(enemy.getKeyFrame(elapsed), (screenWidth - numberOfEnemies * enemyTexture.getWidth()) / 2 + i * enemyTexture.getWidth(), screenHeight - enemyTexture.getHeight() - 100);
+			}
 		}
 		mainGame.end();
 	}

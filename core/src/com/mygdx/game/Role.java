@@ -1,7 +1,8 @@
 package com.mygdx.game;
 
 public enum Role {
-    FIGHTER("core/assets/fighter.txt"),
+    WARRIOR("core/assets/warrior.txt"),
+    MAGICIAN("core/assets/magician.txt"),
     CREATURE("core/assets/creature.txt"),
     BOSS("core/assets/boss.txt");
 

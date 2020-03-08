@@ -1,0 +1,35 @@
+explosion
+frost nova
+arcane barrage
+arcane blast
+arcane missiles
+fireball
+pyroblast
+dragon's breath
+scorch
+cauterize
+frostbolt
+ice lance
+ray of frost
+shatter
+lightning bolt
+lava burst
+chain lightning
+solar wrath
+lunar strike
+lunar beam
+shadow bolt
+immolate
+incinerate
+chaos bolt
+rain of fire
+implosion
+cataclysm
+flame blade
+ice storm
+flame strike
+sunbeam
+meteor swarm
+ball of lightning
+freezing pulse
+ice nova

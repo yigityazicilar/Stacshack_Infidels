@@ -9,7 +9,10 @@ public class Player extends Entity{
     public void importRole(Role role){
 
         switch(role){
-            case FIGHTER :
+            case WARRIOR:
+                this.health = 50;
+                break;
+            case MAGICIAN:
                 this.health = 25;
                 break;
             default :

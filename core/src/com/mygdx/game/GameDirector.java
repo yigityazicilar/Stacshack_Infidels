@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import sun.rmi.rmic.Main;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GameDirector
 {
+
+	private Role playerClass;
 	List<String> playerWordList;
 	List<String> enemyWordList;
 
@@ -65,9 +69,11 @@ public class GameDirector
 		future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
+				MainGame.generateWords = true;
+				MainGame.playerTurn = true;
 				endTimer();
 			}
-		}, 0, duration, TimeUnit.SECONDS);
+		}, duration, 999, TimeUnit.SECONDS);
 		currentWordList = enemyWordsArray;
 		this.target = target;
 		return enemyWordsArray;
@@ -77,30 +83,34 @@ public class GameDirector
 	{
 		String[] playerWordsArray = new String[] {"","",""};
 		
-		for(int i = 0; i < playerWordsArray.length; i++)
-		{
+		for(int i = 0; i < playerWordsArray.length; i++) {
 			boolean wordIsSet = false;
 			String randoWord = "";
-			while(!wordIsSet)
-			{
+			while (!wordIsSet) {
 				int randomIndex = new Random().nextInt(playerWordList.size() - 1);
 				randoWord = playerWordList.get(randomIndex);
 				wordIsSet = true;
 
 				// Check for duplicates
-				for (String nextString: playerWordsArray)
+				System.out.println(randoWord);
+
+				for (String nextString : playerWordsArray) {
+					System.out.println(nextString);
 					if (nextString.equals(randoWord))
 						wordIsSet = false;
+				}
+				playerWordsArray[i] = randoWord;
 			}
-			playerWordsArray[i] = randoWord;
 		}
 
 		future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
+				MainGame.generateWords = true;
+				MainGame.playerTurn = false;
 				endTimer();
 			}
-		}, 0, 3, TimeUnit.SECONDS);
+		}, 3, 999, TimeUnit.SECONDS);
 		currentWordList = playerWordsArray;
 		this.target = target;
 		return playerWordsArray;
@@ -112,15 +122,13 @@ public class GameDirector
 	{
 		if(!isPlayerTurn && !wordIsComplete)
 		{
-			int damage = 0;
-			for (String nextString: currentWordList) damage += nextString.length();
 			target.hurt(damage);
+			damage = 0;
 		}
 		if(isPlayerTurn && wordIsComplete)
 		{
-			int damage = 0;
-			for (String nextString: currentWordList) damage += nextString.length();
 			target.hurt(damage);
+			damage = 0;
 		}
 
 		future.cancel(true);
@@ -133,11 +141,12 @@ public class GameDirector
 		endTimer();
 	}
 
-	public GameDirector()
+	public GameDirector(Role role)
 	{
+		playerClass = role;
 		try
 		{
-			playerWordList = Files.readAllLines(Paths.get(Role.FIGHTER.getFilePath()));
+			playerWordList = Files.readAllLines(Paths.get(playerClass.getFilePath()));
 			enemyWordList = Files.readAllLines(Paths.get(Role.BOSS.getFilePath()));
 		}
 		catch(IOException e)
