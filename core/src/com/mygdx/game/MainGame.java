@@ -74,8 +74,6 @@ public class MainGame implements Screen {
 		word = generator.generateFont(parameter);
 		word.setColor(Color.WHITE);
 		word.getData().setScale(1);
-		Gdx.gl.glClearColor(0.376f, 0.502f,0.22f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.input.setInputProcessor(new InputAdapter(){
 			@Override
 			public boolean keyTyped(char character) {

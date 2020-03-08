@@ -9,6 +9,10 @@ import java.util.TimerTask;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class GameDirector
 {
@@ -22,15 +26,10 @@ public class GameDirector
 	boolean isPlayerTurn;
 	boolean wordIsComplete;
 
-	Timer roundTimer;
-	TimerTask roundTask = new TimerTask(){
+//	Timer roundTimer;
 
-		@Override
-		public void run() {
-			endTimer();
-		}
-	};
-
+	ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+	ScheduledFuture<?> future;
 
 	public String[] requestEnemyWord(int wordDifficulty, int numberOfWords, int duration, Entity target)
 	{
@@ -63,7 +62,12 @@ public class GameDirector
 		}
 
 		// Set timer
-		startRoundTimer(duration);
+		future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				endTimer();
+			}
+		}, 0, duration, TimeUnit.SECONDS);
 		currentWordList = enemyWordsArray;
 		this.target = target;
 		return enemyWordsArray;
@@ -91,18 +95,18 @@ public class GameDirector
 			playerWordsArray[i] = randoWord;
 		}
 
-		startRoundTimer(3);
+		future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				endTimer();
+			}
+		}, 0, 3, TimeUnit.SECONDS);
 		currentWordList = playerWordsArray;
 		this.target = target;
 		return playerWordsArray;
 	}
 
-	public void startRoundTimer(int duration)
-	{
-		roundTimer = new Timer(true);
-		wordIsComplete = false;
-		roundTimer.schedule(roundTask, duration * 1000);
-	}
+
 
 	public void endTimer()
 	{
@@ -119,6 +123,7 @@ public class GameDirector
 			target.hurt(damage);
 		}
 
+		future.cancel(true);
 
 	}
 
@@ -126,12 +131,6 @@ public class GameDirector
 	{
 		this.wordIsComplete = wordIsComplete;
 		endTimer();
-		roundTimer.cancel();
-	}
-
-	public double getTimeUntilEndOfTimer()
-	{
-		return Math.max(0, roundTask.scheduledExecutionTime() - System.currentTimeMillis());
 	}
 
 	public GameDirector()
