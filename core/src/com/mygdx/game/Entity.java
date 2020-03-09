@@ -23,9 +23,9 @@ public abstract class Entity {
 		return entityRole.getMaxHealth();
 	}
 
-	public int getHealthPercentage()
+	public int getHealthFraction()
 	{
-		return getHealth() / getMaxHealth() * 100;
+		return getHealth() / getMaxHealth();
 	}
 
     public void hurt(int damage){
