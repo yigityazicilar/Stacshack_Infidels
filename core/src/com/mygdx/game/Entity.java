@@ -3,9 +3,11 @@ package com.mygdx.game;
 public abstract class Entity {
     protected String name;
     protected int health = 100;
+	protected Role entityRole;
 
     public Entity(String name, Role role){
         this.name = name;
+		this.entityRole = role;
 	}
 
     public String getName(){
@@ -15,6 +17,16 @@ public abstract class Entity {
     public int getHealth(){
         return this.health;
     }
+
+	public int getMaxHealth()
+	{
+		return entityRole.getMaxHealth();
+	}
+
+	public int getHealthPercentage()
+	{
+		return getHealth() / getMaxHealth() * 100;
+	}
 
     public void hurt(int damage){
         this.health -= damage;
